@@ -20,6 +20,7 @@
     "jsdoc-to-markdown": "^3.0.0"
   },
   "dependencies": {
-    "superagent": "^3.6.2"
+    "superagent": "^3.6.2",
+    "superagent-proxy": "^1.0.2"
   }
 }

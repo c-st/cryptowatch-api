@@ -1,5 +1,7 @@
 const http = require('superagent')
 
+require('superagent-proxy')(request)
+
 /**
  * @class CryptoWatch
  * Wrapper for cryptowat.ch api
@@ -11,8 +13,9 @@ class CryptoWatch {
    * @constructor
    */
 
-  constructor() {
+  constructor(proxies) {
     this.url = 'https://api.cryptowat.ch'
+    this.proxies = proxies || []
   }
 
   /**
@@ -23,8 +26,14 @@ class CryptoWatch {
   request(endpoint) {
     return new Promise((resolve, reject) => {
       const url = `${this.url}/${endpoint}`
+
+      // get and use random proxy
+      const randomProxy = this.proxies[Math.floor(Math.random()* this.proxies.length)]
+      print("using proxy", randomProxy)
+
       http
         .get(url)
+        .proxy(randomProxy)
         .end((err, res) => {
           if (err) {
             reject({
