@@ -1,6 +1,7 @@
 const http = require('superagent')
 
-require('superagent-proxy')(request)
+require('superagent-proxy')(http)
+require('superagent-retry')(http)
 
 /**
  * @class CryptoWatch
@@ -34,6 +35,7 @@ class CryptoWatch {
       http
         .get(url)
         .proxy(randomProxy)
+        .retry(2)
         .end((err, res) => {
           if (err) {
             reject({

@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "superagent": "^3.6.2",
-    "superagent-proxy": "^1.0.2"
+    "superagent-proxy": "^1.0.2",
+    "superagent-retry": "^0.6.0"
   }
 }
