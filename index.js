@@ -1,7 +1,6 @@
 const http = require('superagent')
 
 require('superagent-proxy')(http)
-require('superagent-retry')(http)
 
 /**
  * @class CryptoWatch
@@ -28,26 +27,40 @@ class CryptoWatch {
     return new Promise((resolve, reject) => {
       const url = `${this.url}/${endpoint}`
 
-      // get and use random proxy
-      const randomProxy = this.proxies[Math.floor(Math.random()* this.proxies.length)]
-      print("using proxy", randomProxy)
+      if (this.proxies && this.proxies.length > 0) {
+        const randomProxy = this.proxies[Math.floor(Math.random()* this.proxies.length)]
 
-      http
-        .get(url)
-        .proxy(randomProxy)
-        .retry(2)
-        .end((err, res) => {
-          if (err) {
-            reject({
-              message: 'Request failed',
-              error: String(err),
-              url
-            })
-          } else {
-            resolve(res.body.result)
-            this.allowanceRemaining = res.body.allowance.remaining
-          }
-        })
+        http
+          .get(url)
+          .proxy(randomProxy)
+          .end((err, res) => {
+            if (err) {
+              reject({
+                message: 'Request failed',
+                error: String(err),
+                url
+              })
+            } else {
+              resolve(res.body.result)
+              this.allowanceRemaining = res.body.allowance.remaining
+            }
+          })
+      } else {
+        http
+          .get(url)
+          .end((err, res) => {
+            if (err) {
+              reject({
+                message: 'Request failed',
+                error: String(err),
+                url
+              })
+            } else {
+              resolve(res.body.result)
+              this.allowanceRemaining = res.body.allowance.remaining
+            }
+          })
+      }
     })
   }
 
